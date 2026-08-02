@@ -8,8 +8,8 @@
 |------|------|
 | 数据源 | `.db` / `.txt` / `.csv` / `.xlsx` / `.xls` / `.json`，多文件可跨表查询 |
 | 模型层 | OpenAI 兼容 `chat/completions`（DeepSeek / OpenAI / 通义 / 智谱 / Ollama…），纯标准库 `urllib` 实现 |
-| 分析流水线 | Planner → SQL Author → Reviewer → Report Writer，复核失败带反馈自动重试 |
-| 安全 | 三层静态校验 + SQLite authorizer 只读执行 + 步数/行数限制，任意输入无法写入数据 |
+| 分析流水线 | 三个 LLM 角色 Planner → SQL Author → Reviewer，复核失败带反馈自动重试，报告本地生成 |
+| 安全 | 静态校验（单条 SELECT / 关键字黑名单 / 已知表引用）+ SQLite authorizer 只读执行 + 步数/行数限制，任意输入无法写入数据 |
 | 界面 | CLI（Markdown 报告 / JSON 轨迹）+ Tkinter GUI（结果表格 / 可视化图表） |
 | 配置 | `.env` 文件 / 环境变量 / 命令行参数三级优先级 |
 
