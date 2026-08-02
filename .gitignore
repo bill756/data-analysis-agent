@@ -9,3 +9,6 @@ __pycache__/
 
 # Agent 内部状态（过程性文件）
 .reasonix/
+
+# 开发过程设计文档(非运行必需),不入库
+docs/superpowers/
