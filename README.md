@@ -44,7 +44,7 @@ python cli.py "各部门销售额汇总" --file ./sales.xlsx --json
 python gui.py
 ```
 
-配置优先级：**命令行参数 > 系统环境变量 > `.env` 文件 > 内置默认值**。`.env` 请勿提交到版本库（仓库不含 `.env` 与 `.gitignore`，clone 后自行创建 `.env`）。
+配置优先级：**命令行参数 > 系统环境变量 > `.env` 文件 > 内置默认值**。`.env` 请勿提交到版本库，clone 后自行创建。
 
 ## 分析流水线
 
