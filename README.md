@@ -24,7 +24,7 @@ pip install -r requirements.txt
 #     OPENAI_API_KEY=sk-xxx
 #     OPENAI_BASE_URL=https://api.deepseek.com/v1   # 可选，默认 OpenAI
 #     OPENAI_MODEL=deepseek-v4-flash                # 可选，默认 gpt-4o-mini
-python cli.py "各部门销售额汇总" --file ./examples/sales.xlsx
+python cli.py "各部门销售额汇总" --file ./sales.csv
 python cli.py "各部门销售额汇总" --db ./sales.db
 
 # 方式二：环境变量配置 API
@@ -32,19 +32,19 @@ set OPENAI_API_KEY=sk-xxx            # Windows CMD
 export OPENAI_API_KEY=sk-xxx         # bash
 
 # 方式三：命令行参数覆盖（优先级最高）
-python cli.py "各部门销售额汇总" --file ./examples/sales.json     --base-url https://api.deepseek.com/v1 --model deepseek-v4-flash --api-key sk-xxx
+python cli.py "各部门销售额汇总" --file ./sales.json     --base-url https://api.deepseek.com/v1 --model deepseek-v4-flash --api-key sk-xxx
 
 # 指定 .env 文件路径（默认取项目根 .env）
-python cli.py "各部门销售额汇总" --file ./examples/sales.xlsx --env-file ./config/prod.env
+python cli.py "各部门销售额汇总" --file ./sales.xlsx --env-file ./config/prod.env
 
 # 输出 JSON 轨迹
-python cli.py "各部门销售额汇总" --file ./examples/sales.xlsx --json
+python cli.py "各部门销售额汇总" --file ./sales.xlsx --json
 
 # 启动图形界面
 python gui.py
 ```
 
-配置优先级：**命令行参数 > 系统环境变量 > `.env` 文件 > 内置默认值**。`.env` 已被 `.gitignore` 排除，不会误提交密钥。
+配置优先级：**命令行参数 > 系统环境变量 > `.env` 文件 > 内置默认值**。`.env` 请勿提交到版本库（仓库不含 `.env` 与 `.gitignore`，clone 后自行创建 `.env`）。
 
 ## 分析流水线
 
@@ -104,15 +104,6 @@ python gui.py
 - **API 配置**：图形化修改 key/base-url/model，可选写入 `.env`（默认不写）
 - 缺 key 不崩溃：状态栏提示，点击"API 配置"即可补充
 
-## 无 API key 离线演示（本地 mock）
-
-```bash
-python scripts/mock_llm_server.py --port 8765            # 模式: normal / evil_sql / reject_once / bad_json / auth_error
-python cli.py "各部门销售额汇总" --file ./examples/sales.xlsx     --base-url http://127.0.0.1:8765/v1 --api-key test-key
-```
-
-mock 服务器模拟 OpenAI 兼容接口，可在无真实 API key 的情况下演示全流程与各故障路径。
-
 ## 扩展自定义模型
 
 实现 `AnalystModel` 协议（`plan` / `write_sql` / `review` 三个方法），传入 `DataAnalysisAgent` 即可替换在线模型：
@@ -131,14 +122,6 @@ agent = DataAnalysisAgent(conn, model=MyAnalyst())
 print(agent.run("各产品销量趋势").report)
 ```
 
-## 测试
-
-```bash
-python scripts/e2e_test.py      # CLI mock 端到端（25 项断言，无需真实 API key）
-python scripts/gui_test.py      # GUI 逻辑层 + 界面冒烟 + 可视化（31 项断言）
-python scripts/make_examples.py # 重新生成 examples/ 样例文件
-```
-
 ## 项目结构
 
 ```
@@ -150,14 +133,6 @@ python scripts/make_examples.py # 重新生成 examples/ 样例文件
 ├── gui.py             # Tkinter 图形界面（零依赖，后台线程 + 可视化标签页）
 ├── charts.py          # 可视化：查询结果 → matplotlib 图表（可选依赖，支持坐标列指定）
 ├── cli.py             # 命令行入口
-├── examples/          # 样例数据（csv/txt/xlsx/xls/json）
-├── scripts/
-│   ├── make_examples.py   # 样例生成脚本
-│   ├── mock_llm_server.py # 本地 mock LLM 服务器（离线演示/测试，5 种故障模式）
-│   ├── e2e_test.py        # CLI 端到端测试
-│   └── gui_test.py        # GUI 逻辑层 + 冒烟测试
-├── docs/superpowers/specs/  # 设计文档（多格式 / GUI / 可视化）
-├── .env                # 本地 API 配置（已 gitignore）
-├── README.md           # 本文件
-└── requirements.txt    # 依赖清单（openpyxl/xlrd/matplotlib 均为可选）
+├── README.md          # 本文件
+└── requirements.txt   # 依赖清单（openpyxl/xlrd/matplotlib 均为可选）
 ```
